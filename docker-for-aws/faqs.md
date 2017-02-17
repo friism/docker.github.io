@@ -11,13 +11,13 @@ Two different download channels are available for Docker for AWS:
 
 * The **stable channel** provides a general availability release-ready deployment
   for a fully baked and tested, more reliable cluster. The stable version of Docker
-  for AWS comes with the latest released version of Docker Engine. The release
-  schedule is synched with Docker Engine releases and hotfixes. On the stable
+  for AWS comes with the latest released version of Docker. The release
+  schedule is synched with Docker releases and hotfixes. On the stable
   channel, you can select whether to send usage statistics and other data.
 
 * The **beta channel** provides a deployment with new features we are working on,
   but is not necessarily fully tested. It comes with the experimental version of
-  Docker Engine. Bugs, crashes and issues are more likely to occur with the beta
+  Docker. Bugs, crashes and issues are more likely to occur with the beta
   cluster, but you get a chance to preview new functionality, experiment, and provide
   feedback as the deployment evolve. Releases are typically more frequent than for
   stable, often one or more per month. Usage statistics and crash reports are sent
@@ -44,12 +44,13 @@ There isn't anything we can do right now to fix this issue, we have contacted Am
 This AWS documentation page will describe how you can tell if you have EC2-Classic, EC2-VPC or both.  http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-platforms.html
 
 ### Possible fixes to the EC2-Classic region issue:
+
 There are a few work arounds that you can try to get Docker for AWS up and running for you.
 
-1. Create your own VPC, then [install Docker for AWS with a pre-existing VPC](index.md#install-with-an-existing-vpc).
-2. Use a region that doesn't have **EC2-Classic**. The most common region with this issue is `us-east-1`. So try another region, `us-west-1`, `us-west-2`, or the new `us-east-2`. These regions will more then likely be setup with **EC2-VPC** and you will not longer have this issue.
-3. Create an new AWS account, all new accounts will be setup using **EC2-VPC** and will not have this problem.
-4. Contact AWS support to convert your **EC2-Classic** account to a **EC2-VPC** account. For more information checkout the following answer for **"Q. I really want a default VPC for my existing EC2 account. Is that possible?"** on https://aws.amazon.com/vpc/faqs/#Default_VPCs
+1. Create your own VPC and see [installing Docker for AWS with a pre-existing VPC](index.md#install-with-an-existing-vpc).
+2. Use a region that doesn't have **EC2-Classic**. The region where this issue is most common is `us-east-1`. Different regions like `us-west-1`, `us-west-2`, or the new `us-east-2` are more likely to have **EC2-VPC** and not exhibit this problem.
+3. Create an new AWS account, all new accounts will be setup using **EC2-VPC** and will not exhibit this problem.
+4. You can try and contact AWS support to convert your **EC2-Classic** account to a **EC2-VPC** account. For more information checkout the following answer for **"Q. I really want a default VPC for my existing EC2 account. Is that possible?"** on https://aws.amazon.com/vpc/faqs/#Default_VPCs
 
 ### Helpful links:
 - http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/default-vpc.html
@@ -99,18 +100,20 @@ Yes, see [install Docker for AWS with a pre-existing VPC](index.md#install-with-
 * **Destination CIDR block:** 0.0.0.0/0
 * **Subnets:** Subnet1, Subnet2, Subnet3
 
-##### Subnet note:
-If you are using the `10.0.0.0/16` CIDR in your VPC. When you create a docker network, you will need to make sure you pick a subnet (using `docker network create —subnet` option) that doesn't conflict with the `10.0.0.0` network.
+##### Subnet Note:
+
+In case you're using the `10.0.0.0/16` CIDR in your VPC you will need to make sure you pick a subnet (using `docker network create —subnet` option) that doesn't conflict with the `10.0.0.0` network when creating a Docker network.
 
 ## Which AWS regions will this work with?
 
-Docker for AWS should work with all regions except for AWS China, which is a little different than the other regions.
+Docker for AWS should work with all regions except for AWS China.
 
 ## How many Availability Zones does Docker for AWS use?
 
-Docker for AWS will dynamically decide the correct amount of Availability Zone's to use based on the region. In regions that support it, we will use 3 Availability Zones, and 2 for the rest of the regions. We recommend running production workloads only in regions that have at least 3 Availability Zones.
+In regions with 3 Availability Zones, Docker will use 3 AZs and 2 AZs in regions with only 2 AZs. Selecting AZ count is handled by Docker. We recommend running production workloads only in regions that have at least 3 Availability Zones.
 
 ## What do I do if I get `KeyPair error` on AWS?
+
 As part of the prerequisites, you need to have an SSH key uploaded to the AWS region you are trying to deploy to.
 For more information about adding an SSH key pair to your account, please refer to the [Amazon EC2 Key Pairs docs](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
@@ -138,12 +141,13 @@ Please provide this session ID to the maintainer debugging your issue.
 
 ## Metrics
 
-Docker for AWS sends anonymized minimal metrics to Docker (heartbeat). These metrics are used to monitor adoption and are critical to improve Docker for AWS.
+Docker for AWS sends minimal anonymized metrics to Docker (heartbeat). Metrics are used to monitor adoption and are critical to improve Docker for AWS.
 
 ## How do I run administrative commands?
 
-By default when you SSH into a manager, you will be logged in as the regular username: `docker` - It is possible however to run commands with elevated privileges by using `sudo`.
-For example to ping one of the nodes, after finding its IP via the Azure/AWS portal (e.g. 10.0.0.4), you could run:
+By default when you SSH into a manager, you will be logged in as the regular user: `docker` - It is possible to run commands with elevated privileges by using `sudo`.
+
+For example to ping one of the nodes, after finding its IP via the Azure/AWS portal (e.g. 10.0.0.4):
 
 ```bash
 $ sudo ping 10.0.0.4

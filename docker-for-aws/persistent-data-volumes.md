@@ -32,7 +32,9 @@ docker service create --replicas 5 --name ping1 \
 
 Here all replicas/tasks of the service `ping1` share the same persistent volume `sharedvol1` mounted at `/shareddata` path within the container. Docker Swarm takes care of interacting with the Cloudstor plugin to make sure the common backing store is mounted on all nodes in the swarm where tasks of the service are scheduled. Each task needs to make sure they don't write concurrently on the same file at the same time and cause corruptions since the volume is shared.
 
-With the above example, you can make sure that the volume is indeed shared by logging into one of the containers in one swarm node, writing to a file under `/shareddata/` and reading the file under `/shareddata/` from another container (in the same node or a different node).
+All replicas/tasks running the service `ping1` share the same persistent volume `sharedvol1` mounted at `/shareddata` path within containers. Docker Swarm takes care of interacting with the Cloudstor plugin to make sure the common backing store is mounted on all nodes in the swarm where tasks of the service are scheduled. Each task needs to make sure they don't write concurrently on the same file at the same time and cause corruptions since the volume is shared.
+
+With the above example, you can check that the volume is indeed shared by logging into one of the containers in one swarm node, writing to a file under `/shareddata/` and reading the file under `/shareddata/` from another container (in the same node or on a different node).
 
 ### Use a unique volume per task:
 
@@ -44,7 +46,7 @@ docker service create --replicas 5 --name ping2 \
 
 Here the templatized notation is used to indicate to Docker Swarm that a unique volume be created and mounted for each replica/task of the service `ping2`. After initial creation of the volumes corresponding to the tasks they are attached to (in the nodes the tasks are scheduled in), if a task is rescheduled on a different node, Docker Swarm will interact with the Cloudstor plugin to create and mount the volume corresponding to the task on the node the task got scheduled on. It's highly recommended that you use the `.Task.Slot` template to make sure task N always gets access to vol N no matter which node it is executing on/scheduled to.
 
-In the above example, each task has it's own volume mounted at `/mydata/` and the files under there are unique to the task mounting the volume.
+Here the templatized notation is used to indicate to Docker Swarm that a unique volume be created and mounted for each replica/task of the service `ping2`. If a task is rescheduled on a different node, Docker Swarm will interact with the Cloudstor plugin to create and mount the volume corresponding to the task on the node the task got scheduled on. It's highly recommended that you use the `.Task.Slot` template to make sure task N always gets access to vol N no matter which node it is executing on.
 
 ### List or remove volumes created by Cloudstor
 

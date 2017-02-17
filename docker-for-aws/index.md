@@ -11,12 +11,7 @@ redirect_from:
 
 ## Quickstart
 
-If your account [has the proper
-permissions](/docker-for-aws/iam-permissions.md), you can
-use the blue button from the stable or beta channel to bootstrap Docker for AWS
-using CloudFormation. For more about stable and beta channels, see the
-[FAQs](/docker-for-aws/faqs.md#stable-and-beta-channels).
-
+If your account [has the proper permissions](/docker-for-aws/iam-permissions.md), you can use the blue button from the stable or beta channel to bootstrap Docker for AWS using CloudFormation. For more about stable and beta channels, see the [FAQs](/docker-for-aws/faqs.md#stable-and-beta-channels).
 
 <table style="width:100%">
   <tr>
@@ -24,9 +19,9 @@ using CloudFormation. For more about stable and beta channels, see the
     <th style="font-size: x-large; font-family: arial">Beta channel</th>
   </tr>
   <tr valign="top">
-    <td width="50%">This deployment is fully baked and tested, and comes with the latest GA version of Docker Engine. <br><br>This is the best channel to use if you want a reliable platform to work with. <br><br>These releases follow a version schedule with a longer lead time than the betas, synched with Docker Engine releases and hotfixes.
+    <td width="50%">This is the latest GA version of Docker. <br><br>This is the best channel to use if you want a reliable platform. <br><br>Releases on the stable channel are synced with regular Docker releases.
     </td>
-    <td width="50%">This deployment offers cutting edge features and comes with the experimental version of Docker Engine, described in the <a href="https://github.com/docker/docker/tree/master/experimental">Docker Experimental Features README</a> on GitHub.<br><br>This is the best channel to use if you want to experiment with features under development, and can weather some instability and bugs. This channel is a continuation of the beta program, where you can provide feedback as the apps evolve. Releases are typically more frequent than for stable, often one or more per month. <br><br>We collect usage data on betas across the board.</td>
+    <td width="50%">Beta offers cutting edge features and comes with experimental features turned on.<br><br>This is the best channel to use if you want to experiment with features under development. Beta releases are more frequent. <br><br>Docker collects usage data on beta Docker for AWS.</td>
   </tr>
   <tr valign="top">
   <td width="50%">
@@ -48,18 +43,20 @@ There are two ways to deploy Docker for AWS:
 We recommend having Docker for AWS create the VPC since it allows Docker to optimize the environment. Installing in an existing VPC requires more work.
 
 ### Create a new VPC
+
 This approach will create a new VPC, subnets, gateways and everything else that is needed in order to run Docker for AWS. It is the easiest way to get started, and requires the least amount of work.
 
 All you need to do it run the CloudFormation template, answer some questions, and you are good to go.
 
 ### Install with an Existing VPC
-If you need to install Docker for AWS with an existing VPC, you need to do a few preliminary steps. See [recommended VPC and Subnet setup](faqs.md#recommended-vpc-and-subnet-setup) for more details.
+
+If you need to install Docker for AWS in an existing VPC there are a few extra steps to get started. See [recommended VPC and Subnet setup](faqs.md#recommended-vpc-and-subnet-setup) for more details.
 
 1. Pick a VPC in a region you want to use.
 
 2. Make sure the selected VPC is setup with an Internet Gateway, Subnets, and Route Tables
 
-3. You need to have three different subnets, ideally each in their own availability zone. If you are running in a region with only two Availability Zones, you will need to add more than one subnet into one of the availability zones. For production deployments we recommend only deploying to regions that have three or more Availability Zones.
+3. You need to have 3 different subnets, ideally each in their own availability zone. If you are running in a region where you only have 2 Availability Zones, you will need to have two subnets in one of the AZs.
 
 4. When you launch the docker for AWS CloudFormation stack, make sure you use the one for existing VPCs. This template will prompt you for the VPC and subnets that you want to use for Docker for AWS.
 
@@ -80,7 +77,7 @@ For more information about adding an SSH key pair to your account, please refer 
 
 ## Configuration
 
-Docker for AWS is installed with a CloudFormation template that configures Docker in swarm-mode, running on instances backed custom AMIs. There are two ways you can deploy Docker for AWS. You can use the AWS Management Console (browser based), or use the AWS CLI. Both have the following configuration options.
+Docker for AWS is installed with a CloudFormation template that configures Docker in swarm-mode, running on instances backed by custom AMIs. There are two ways you can deploy Docker for AWS. You can use the AWS Management Console (browser based), or use the AWS CLI. Both have the following configuration options.
 
 ### Configuration options
 
@@ -103,9 +100,9 @@ We recommend at least 3 managers, and if you have a lot of workers, you should p
 
 #### EnableSystemPrune
 
-Enable if you want Docker for AWS to automatically cleanup unused space on your swarm nodes.
+Choose whether you want Docker for AWS to automatically cleanup unused space on your swarm nodes.
 
-When enabled, `docker system prune` will run staggered every day, starting at 1:42AM UTC on both workers and managers. The prune times are staggered slightly so that not all nodes will be pruned at the same time. This limits resource spikes on the swarm.
+When enabled, `docker system prune` will run staggered across nodes every day, starting at 1:42AM UTC on both workers and managers. The prune times are staggered slightly so that not all nodes will be pruned at the same time. This limits resource spikes on the swarm.
 
 Pruning removes the following:
 - All stopped containers
@@ -139,7 +136,7 @@ You can also invoke the Docker for AWS CloudFormation template from the AWS CLI:
 Here is an example of how to use the CLI. Make sure you populate all of the parameters and their values:
 
 ```bash
-$ aws cloudformation create-stack --stack-name teststack --template-url <templateurl> --parameters ParameterKey=KeyName,ParameterValue=<keyname> ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=ManagerInstanceType,ParameterValue=t2.micro ParameterKey=ClusterSize,ParameterValue=1 --capabilities CAPABILITY_IAM
+$ aws cloudformation create-stack --stack-name teststack --template-url lhttps://editions-us-east-1.s3.amazonaws.com/aws/stable/Docker.tmpl --parameters ParameterKey=KeyName,ParameterValue=<keyname> ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=ManagerInstanceType,ParameterValue=t2.micro ParameterKey=ClusterSize,ParameterValue=1 --capabilities CAPABILITY_IAM
 ```
 
 To fully automate installs, you can use the [AWS Cloudformation API](http://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/Welcome.html).
@@ -148,18 +145,18 @@ To fully automate installs, you can use the [AWS Cloudformation API](http://docs
 
 Docker for AWS starts with a CloudFormation template that will create everything that you need from scratch. There are only a few prerequisites that are listed above.
 
-The CloudFormation template first creates a new VPC along with subnets and security groups. After the networking set-up completes, two Auto Scaling Groups are created, one for the managers and one for the workers, and the configured capacity setting is applied. Managers start first and create a quorum using Raft, then the workers start and join the swarm one at a time. At this point, the swarm is comprised of X number of managers and Y number of workers, and you can deploy your applications. See the [deployment](deploy.md) docs for your next steps.
+The CloudFormation template first creates a new VPC (or re-uses an existing one) along with subnets and security groups. After the networking set-up completes, two Auto Scaling Groups are created, one for managers and one for workers, and the configured capacity setting is applied. Managers start first and create a quorum using Raft, then the workers start and join the swarm one at a time. At this point, the swarm is comprised of X number of managers and Y number of workers, and you can deploy your applications. See the [deployment](deploy.md) docs for next steps.
 
-If you increase the number of instances running in your worker Auto Scaling Group (via the AWS console, or updating the CloudFormation configuration), the new nodes that will start up will automatically join the swarm.
+If you increase the number of instances running in your worker Auto Scaling Group (via the AWS console, or updating the CloudFormation configuration), new nodes will automatically join the swarm.
 
 Elastic Load Balancers (ELBs) are set up to help with routing traffic to your swarm.
 
 ## Logging
 
-Docker for AWS automatically configures logging to Cloudwatch for containers you run on Docker for AWS. A Log Group is created for each Docker for AWS install, and a log stream for each container.
+Docker for AWS automatically configures logging to Cloudwatch for containers you run on Docker for AWS. A Log Group is created for each Docker for AWS install along with log streams for each container started.
 
 The `docker logs` and `docker service logs` commands are not supported on Docker for AWS when using Cloudwatch for logs. Instead, check container logs in CloudWatch.
 
 ## System containers
 
-Each node will have a few system containers running on them to help run your swarm cluster. In order for everything to run smoothly, please keep those containers running, and don't make any changes. If you make any changes, Docker for AWS will not work correctly.
+Each node will be running a couple of system containers to help run the swarm cluster. In order for everything to run smoothly, please keep those containers running, and don't make any changes. If you make any changes, Docker for AWS will not work correctly.
