@@ -35,12 +35,13 @@ upgrade your installation to the latest release.
   * UI for adding users to teams simplified (#8399, #9404).
   * The grant list can now sorted and pagination in the grants view has been improved. The grants view previously had glitches on systems with many grants (#8874, #9203).
   * Fixed problem where UI would hang when pulling images (#9380).
-  * "Max failure ratio" and "Failure action" re-introduced in service definitions. These settings were not available in UCP 2.2, but were available in previous UCP versions (#9186).
+  * "Max failure ratio" and "Failure action" re-introduced in service definitions. These settings were not available in UCP 2.2, but were available in previous UCP versions (#9186).join 
   * Collection labels are no longer applied to UCP system services. UCP previously auto-applied labels, which was confusing (#10030)
 
 **Known issues**
 
  * Docker currently has limitations related to overlay networking and services using VIP-based endpoints. These limitations apply to use of the HTTP Routing Mesh (HRM). HRM users should familiarize themselves with these limitations. In particular, HRM may encounter virtual IP exhaustion (as evidenced by `failed to allocate network IP for task` Docker log messages). If this happens, and if the HRM service is restarted or rescheduled for any reason, HRM may fail to resume operation automatically. See the Docker EE 17.06-ee5 release notes for details.
+ * The UCP Swarm admin UI contains a bug which means that it's not possible to update "Task History Limit", "Heartbeat Period" and "Node Certificate Expiry" settings using the UI (rotating join tokens works). As a workaround, admins should use the Docker CLI to change these settings.
 
 ## Version 2.2.3
 
